@@ -1,0 +1,760 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#04060F;--bg2:#080C1A;--bg3:#0D1225;
+--glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);
+--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+--saffron:#FF6B00;--saffron2:#FF8C33;--saffronGlow:rgba(255,107,0,0.15);
+--gold:#FFB347;--goldGlow:rgba(255,179,71,0.12);
+--teal:#00D4AA;--tealGlow:rgba(0,212,170,0.12);
+--text:#F0F4FF;--textMuted:rgba(240,244,255,0.5);--textDim:rgba(240,244,255,0.28);
+--r8:8px;--r12:12px;--r16:16px;--r24:24px;
+--font:'Syne',sans-serif;--fontBody:'Inter',sans-serif;
+}
+body{font-family:var(--fontBody);background:var(--bg);color:var(--text);overflow-x:hidden}
+
+.page{display:none}.page.active{display:block}
+
+/* ── CANVAS BG ── */
+#canvas-bg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+/* ── NAV ── */
+nav{position:relative;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;border-bottom:1px solid var(--border);background:rgba(4,6,15,0.85);backdrop-filter:blur(20px)}
+.logo{font-family:var(--font);font-size:20px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px}
+.logo span{color:var(--saffron);text-shadow:0 0 20px var(--saffron)}
+.logo em{color:var(--teal);font-style:normal}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nl{padding:7px 14px;border-radius:var(--r8);font-size:13px;font-weight:500;cursor:pointer;color:var(--textMuted);transition:all .2s;font-family:var(--fontBody);border:none;background:none}
+.nl:hover{color:var(--text);background:var(--glass2)}
+.btn{padding:8px 18px;border-radius:var(--r8);border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s;font-family:var(--fontBody)}
+.btn-ghost{background:var(--glass);border:1px solid var(--border2);color:var(--text)}
+.btn-ghost:hover{background:var(--glass2);border-color:rgba(255,255,255,0.22)}
+.btn-saffron{background:var(--saffron);color:white;box-shadow:0 0 20px var(--saffronGlow)}
+.btn-saffron:hover{background:var(--saffron2);box-shadow:0 0 30px rgba(255,107,0,0.3)}
+.btn-teal{background:var(--teal);color:#04060F;font-weight:700}
+.btn-teal:hover{background:#00f0c0}
+
+/* ── HERO ── */
+.hero{position:relative;min-height:580px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5rem 2rem 4rem;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.orb1{width:400px;height:400px;background:rgba(255,107,0,0.12);top:-100px;left:-100px}
+.orb2{width:350px;height:350px;background:rgba(0,212,170,0.08);bottom:-80px;right:-80px}
+.orb3{width:250px;height:250px;background:rgba(138,43,226,0.06);top:50%;left:50%;transform:translate(-50%,-50%)}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--glass);border:1px solid var(--border2);color:var(--gold);padding:5px 16px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:1.5rem;letter-spacing:.5px;font-family:var(--fontBody)}
+.hero h1{font-family:var(--font);font-size:54px;font-weight:800;line-height:1.05;margin-bottom:1.25rem;position:relative;z-index:1}
+.hero h1 .hi{color:var(--saffron);text-shadow:0 0 40px rgba(255,107,0,0.4)}
+.hero h1 .hi2{color:var(--teal);text-shadow:0 0 40px rgba(0,212,170,0.3)}
+.hero-sub{font-size:17px;color:var(--textMuted);max-width:480px;line-height:1.65;margin-bottom:2.5rem;font-weight:300}
+.hero-search{display:flex;gap:4px;background:var(--glass);border:1px solid var(--border2);border-radius:var(--r16);padding:6px;max-width:600px;width:100%;margin:0 auto 2.5rem;backdrop-filter:blur(10px)}
+.hs-input{flex:1;background:transparent;border:none;padding:10px 14px;font-size:14px;color:var(--text);font-family:var(--fontBody);outline:none}
+.hs-input::placeholder{color:var(--textDim)}
+.hs-select{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:var(--r8);padding:10px 12px;font-size:13px;color:var(--textMuted);font-family:var(--fontBody);outline:none}
+.hs-select option{background:#0D1225;color:var(--text)}
+.hs-btn{background:var(--saffron);border:none;color:white;padding:10px 24px;border-radius:var(--r12);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--fontBody);white-space:nowrap;box-shadow:0 0 20px var(--saffronGlow)}
+.hero-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap}
+.hstat{text-align:center}
+.hstat-num{font-family:var(--font);font-size:30px;font-weight:800;color:var(--saffron)}
+.hstat-lbl{font-size:12px;color:var(--textMuted);margin-top:2px}
+
+/* ── SECTION ── */
+.section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+.sec-label{font-size:11px;font-weight:600;letter-spacing:2px;color:var(--saffron);text-transform:uppercase;margin-bottom:8px;font-family:var(--fontBody)}
+.sec-title{font-family:var(--font);font-size:36px;font-weight:800;margin-bottom:6px}
+.sec-sub{font-size:15px;color:var(--textMuted);margin-bottom:2.5rem;font-weight:300}
+
+/* ── GLASS CARD ── */
+.gc{background:var(--glass);border:1px solid var(--border);border-radius:var(--r16);transition:all .3s;position:relative;overflow:hidden}
+.gc::before{content:'';position:absolute;inset:0;border-radius:var(--r16);background:var(--glass);opacity:0;transition:opacity .3s}
+.gc:hover::before{opacity:1}
+.gc:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+
+/* ── STATE CARDS ── */
+.states-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.state-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r12);padding:14px 10px;text-align:center;cursor:pointer;transition:all .25s}
+.state-card:hover{background:var(--glass2);border-color:rgba(255,107,0,0.3);transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,107,0,0.1)}
+.state-card .s-emoji{font-size:26px;margin-bottom:6px}
+.state-card .s-name{font-size:12px;font-weight:500;color:var(--text)}
+.state-card .s-count{font-size:10px;color:var(--textDim);margin-top:2px}
+
+/* ── GUIDE CARDS ── */
+.guides-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px}
+.guide-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r16);overflow:hidden;cursor:pointer;transition:all .3s}
+.guide-card:hover{border-color:rgba(255,107,0,0.25);transform:translateY(-5px);box-shadow:0 24px 60px rgba(0,0,0,0.5)}
+.gc-banner{height:140px;display:flex;align-items:center;justify-content:center;position:relative;font-size:60px}
+.gc-tier{position:absolute;top:10px;right:10px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;font-family:var(--fontBody)}
+.tier-budget{background:rgba(0,212,170,0.2);color:var(--teal);border:1px solid rgba(0,212,170,0.3)}
+.tier-standard{background:rgba(255,107,0,0.15);color:var(--saffron2);border:1px solid rgba(255,107,0,0.25)}
+.tier-premium{background:rgba(255,179,71,0.15);color:var(--gold);border:1px solid rgba(255,179,71,0.25)}
+.gc-body{padding:1rem 1.25rem}
+.gc-name{font-family:var(--font);font-size:16px;font-weight:700;margin-bottom:3px}
+.gc-loc{font-size:12px;color:var(--textMuted);margin-bottom:8px}
+.gc-stars{font-size:12px;color:var(--gold)}
+.gc-langs{font-size:11px;color:var(--textDim);margin:6px 0}
+.verified-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.2);color:var(--teal);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.gc-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.gc-price{font-family:var(--font);font-size:22px;font-weight:800;color:var(--saffron)}
+.gc-price span{font-family:var(--fontBody);font-size:11px;color:var(--textDim);font-weight:400}
+
+/* ── STEPS ── */
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.step-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r16);padding:1.75rem 1.5rem;text-align:center;position:relative;overflow:hidden}
+.step-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(255,107,0,0.05),transparent 70%);pointer-events:none}
+.step-num{width:44px;height:44px;background:rgba(255,107,0,0.15);border:1px solid rgba(255,107,0,0.3);color:var(--saffron);border-radius:var(--r12);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;margin:0 auto 1rem;font-family:var(--font)}
+.step-card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.step-card p{font-size:13px;color:var(--textMuted);line-height:1.55}
+
+/* ── PAYMENT BAND ── */
+.pay-band{background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:2.5rem 2rem;text-align:center}
+.pay-label{font-size:10px;letter-spacing:2.5px;color:var(--textDim);text-transform:uppercase;margin-bottom:1rem;font-family:var(--fontBody)}
+.pay-methods{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.pm{background:var(--glass);border:1px solid var(--border);border-radius:var(--r8);padding:9px 18px;font-size:13px;font-weight:500;color:var(--textMuted);transition:all .2s;cursor:default}
+.pm:hover{border-color:rgba(255,107,0,0.3);color:var(--text)}
+
+/* ── SEARCH PAGE ── */
+.search-layout{display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:start}
+.filter-panel{background:var(--glass);border:1px solid var(--border);border-radius:var(--r16);padding:1.5rem;position:sticky;top:80px}
+.filter-panel h3{font-family:var(--font);font-size:15px;font-weight:700;margin-bottom:1.25rem;color:var(--text)}
+.fg{margin-bottom:1.25rem}
+.fg label{font-size:11px;font-weight:600;color:var(--textMuted);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.fg select,.fg input{width:100%;padding:9px 11px;background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:var(--r8);font-size:13px;color:var(--text);font-family:var(--fontBody);outline:none}
+.fg select option{background:#0D1225}
+input[type=range]{accent-color:var(--saffron)}
+.results-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.results-count{font-size:13px;color:var(--textMuted)}
+
+/* ── TRIP PLANNER ── */
+.planner-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r24);padding:2rem}
+.fg2{display:flex;flex-direction:column;gap:5px}
+.fg2 label{font-size:11px;color:var(--textMuted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.fg2 select,.fg2 input{padding:10px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:var(--r8);font-size:13px;color:var(--text);font-family:var(--fontBody);outline:none}
+.fg2 select option{background:#0D1225}
+.trip-result{display:none;margin-top:1.5rem}
+.trip-result.show{display:block}
+.itm{display:flex;gap:12px;padding:1rem 0;border-bottom:1px solid var(--border)}
+.itm:last-child{border:none}
+.day-chip{background:rgba(255,107,0,0.15);border:1px solid rgba(255,107,0,0.25);color:var(--saffron2);font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;height:fit-content;white-space:nowrap;font-family:var(--fontBody)}
+.itm h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.itm p{font-size:13px;color:var(--textMuted);line-height:1.5}
+.budget-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.bitem{background:rgba(255,255,255,0.04);border-radius:var(--r12);padding:12px;text-align:center}
+.b-lbl{font-size:10px;color:var(--textDim);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.b-val{font-family:var(--font);font-size:18px;font-weight:700;color:var(--saffron)}
+
+/* ── DASHBOARD ── */
+.dash-layout{display:grid;grid-template-columns:200px 1fr;gap:20px;min-height:500px}
+.sidebar{background:var(--glass);border:1px solid var(--border);border-radius:var(--r16);padding:1.25rem}
+.sb-user{text-align:center;padding-bottom:1rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.avtr{width:52px;height:52px;border-radius:50%;background:rgba(255,107,0,0.2);border:2px solid rgba(255,107,0,0.3);color:var(--saffron);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:20px;font-weight:800;margin:0 auto 8px}
+.sb-name{font-weight:600;font-size:14px}
+.sb-role{font-size:11px;color:var(--textDim);margin-top:1px}
+.sb-menu a{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r8);font-size:13px;cursor:pointer;color:var(--textMuted);transition:all .15s;text-decoration:none;margin-bottom:2px;font-family:var(--fontBody)}
+.sb-menu a.active,.sb-menu a:hover{background:rgba(255,107,0,0.12);color:var(--saffron2)}
+.dash-content{background:var(--glass);border:1px solid var(--border);border-radius:var(--r16);padding:1.75rem}
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1.75rem}
+.scard{background:rgba(255,255,255,0.04);border-radius:var(--r12);padding:14px}
+.scard-lbl{font-size:11px;color:var(--textDim);margin-bottom:4px}
+.scard-val{font-family:var(--font);font-size:22px;font-weight:800}
+.scard-val.orange{color:var(--saffron)}
+.scard-val.teal{color:var(--teal)}
+.dtable{width:100%;border-collapse:collapse;font-size:13px}
+.dtable th{text-align:left;padding:9px 10px;font-weight:500;color:var(--textDim);border-bottom:1px solid var(--border)}
+.dtable td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--text)}
+.dtable tr:hover td{background:var(--glass)}
+.sbadge{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.sbadge.done{background:rgba(0,212,170,0.15);color:var(--teal);border:1px solid rgba(0,212,170,0.2)}
+.sbadge.upcoming{background:rgba(255,179,71,0.15);color:var(--gold);border:1px solid rgba(255,179,71,0.2)}
+
+/* ── ADMIN ── */
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:2rem}
+.astat{background:var(--glass);border:1px solid var(--border);border-radius:var(--r12);padding:1.25rem}
+.astat-lbl{font-size:11px;color:var(--textDim);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.astat-val{font-family:var(--font);font-size:26px;font-weight:800}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.75rem;gap:0;overflow-x:auto}
+.tab{padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;color:var(--textMuted);transition:all .2s;font-family:var(--fontBody)}
+.tab.active{color:var(--saffron);border-bottom-color:var(--saffron)}
+
+/* ── CHAT ── */
+.chat-wrap{background:var(--glass);border:1px solid var(--border);border-radius:var(--r16);overflow:hidden;max-width:640px}
+.chat-head{background:var(--bg3);border-bottom:1px solid var(--border);padding:.875rem 1.25rem;display:flex;align-items:center;gap:12px}
+.chat-av{width:36px;height:36px;border-radius:50%;background:rgba(255,107,0,0.2);border:1.5px solid rgba(255,107,0,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:700;color:var(--saffron);font-size:14px}
+.chat-msgs{padding:1rem;height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:72%}
+.msg.me{align-self:flex-end}
+.mbubble{padding:9px 14px;border-radius:14px;font-size:13px;line-height:1.5}
+.msg.them .mbubble{background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:4px 14px 14px 14px}
+.msg.me .mbubble{background:var(--saffron);color:white;border-radius:14px 14px 4px 14px}
+.mtime{font-size:10px;color:var(--textDim);margin-top:3px}
+.msg.me .mtime{text-align:right}
+.chat-foot{display:flex;gap:8px;padding:.875rem;border-top:1px solid var(--border)}
+.chat-in{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:20px;padding:8px 16px;font-size:13px;color:var(--text);font-family:var(--fontBody);outline:none}
+.chat-in::placeholder{color:var(--textDim)}
+.chat-send{background:var(--saffron);color:white;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px}
+
+/* ── PROFILE ── */
+.profile-hero{background:var(--glass);border:1px solid var(--border);border-radius:var(--r24);padding:2rem;display:flex;gap:1.75rem;margin-bottom:1.5rem}
+.prof-av{width:90px;height:90px;border-radius:50%;background:rgba(255,107,0,0.15);border:2px solid rgba(255,107,0,0.25);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:36px;font-weight:800;color:var(--saffron);flex-shrink:0}
+.prof-info h2{font-family:var(--font);font-size:24px;font-weight:800;margin-bottom:4px}
+.prof-meta{font-size:13px;color:var(--textMuted);margin-bottom:10px}
+.prof-tags{display:flex;flex-wrap:wrap;gap:6px}
+.ptag{background:var(--glass);border:1px solid var(--border2);padding:4px 12px;border-radius:20px;font-size:11px;color:var(--textMuted)}
+.review-card{background:rgba(255,255,255,0.04);border-radius:var(--r12);padding:14px;margin-bottom:10px}
+.rev-name{font-size:13px;font-weight:600;margin-bottom:4px}
+.rev-text{font-size:12px;color:var(--textMuted);line-height:1.5}
+.book-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r16);padding:1.5rem}
+
+/* ── REGISTER FORM ── */
+.reg-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r24);padding:2rem}
+.ut-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1.5rem}
+.ut-btn{padding:14px 8px;border:1px solid var(--border2);border-radius:var(--r12);cursor:pointer;text-align:center;background:var(--glass);transition:all .2s}
+.ut-btn.active{border-color:var(--saffron);background:rgba(255,107,0,0.1)}
+.ut-btn .ut-icon{font-size:22px;margin-bottom:4px}
+.ut-btn .ut-lbl{font-size:12px;font-weight:500;color:var(--textMuted)}
+.mf{margin-bottom:14px}
+.mf label{font-size:11px;font-weight:600;color:var(--textMuted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.mf input,.mf select{width:100%;padding:10px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:var(--r8);font-size:13px;color:var(--text);font-family:var(--fontBody);outline:none}
+.mf select option{background:#0D1225}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ── MODAL (faux viewport) ── */
+.modal-viewport{min-height:420px;background:rgba(0,0,0,0.7);border-radius:var(--r16);display:flex;align-items:center;justify-content:center;padding:2rem;display:none}
+.modal-viewport.show{display:flex}
+.modal{background:#0D1225;border:1px solid var(--border2);border-radius:var(--r24);padding:2rem;width:100%;max-width:420px}
+.modal h2{font-family:var(--font);font-size:22px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--textMuted);margin-bottom:1.5rem}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--textMuted);line-height:1;margin-top:-4px}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:3rem 2rem 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;max-width:1100px;margin:0 auto}
+footer h4{font-family:var(--font);font-size:13px;font-weight:700;color:var(--saffron);margin-bottom:12px;letter-spacing:.5px}
+footer p,footer a{font-size:13px;color:var(--textMuted);display:block;text-decoration:none;line-height:2.2}
+footer a:hover{color:var(--saffron)}
+.footer-bottom{text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:12px;color:var(--textDim);max-width:1100px;margin-left:auto;margin-right:auto}
+
+/* ── BECOME GUIDE ── */
+.bg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:2.5rem}
+.bg-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r16);padding:1.5rem;text-align:center}
+.bg-icon{font-size:30px;margin-bottom:10px}
+.bg-card h3{font-size:15px;font-weight:600;margin-bottom:5px}
+.bg-card p{font-size:12px;color:var(--textMuted)}
+
+/* ── 3D CARD TILT ── */
+.tilt{transform-style:preserve-3d;transition:transform .15s}
+
+@media(max-width:720px){
+  .search-layout,.dash-layout,.footer-grid{grid-template-columns:1fr}
+  .filter-panel{position:static}
+  .hero h1{font-size:34px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .profile-hero{flex-direction:column}
+}
+</style>
+
+<h2 class="sr-only">Guide Bharat — India's premium AI-powered tourist guide marketplace with 3D modern design. Browse guides across 28 Indian states.</h2>
+
+<nav>
+  <div class="logo" onclick="showPage('home')" style="cursor:pointer">🇮🇳 <span>Guide</span><em>Bharat</em></div>
+  <div class="nav-links">
+    <button class="nl" onclick="showPage('search')">Guides Dhundho</button>
+    <button class="nl" onclick="showPage('planner')">Trip Planner</button>
+    <button class="nl" onclick="showPage('become-guide')">Guide Bano</button>
+    <button class="nl" onclick="showPage('admin')">Admin</button>
+    <button class="btn btn-ghost" onclick="showMod('login')">Login</button>
+    <button class="btn btn-saffron" onclick="showMod('register')">Register</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-orb orb1"></div>
+    <div class="hero-orb orb2"></div>
+    <div class="hero-orb orb3"></div>
+    <canvas id="canvas-bg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
+    <div class="hero-badge">✦ India's #1 AI-Powered Guide Marketplace</div>
+    <h1><span class="hi">Apne Sapno Ka</span><br><span class="hi2">Bharat</span> Explore Karo</h1>
+    <p class="hero-sub">Har jagah ke liye AI-verified local guides — budget mein, apni bhasha mein, real-time chat ke saath.</p>
+    <div class="hero-search">
+      <input class="hs-input" type="text" placeholder="Kahan jaana hai? e.g. Jagannath Puri, Taj Mahal..." />
+      <select class="hs-select">
+        <option>Koi bhi State</option>
+        <option>Odisha</option><option>Rajasthan</option><option>Uttar Pradesh</option>
+        <option>Kerala</option><option>Goa</option><option>Himachal Pradesh</option>
+      </select>
+      <button class="hs-btn" onclick="showPage('search')">🔍 Search</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-num">12,400+</div><div class="hstat-lbl">Verified Guides</div></div>
+      <div class="hstat"><div class="hstat-num">28</div><div class="hstat-lbl">States Covered</div></div>
+      <div class="hstat"><div class="hstat-num">₹200</div><div class="hstat-lbl">Se Shuru</div></div>
+      <div class="hstat"><div class="hstat-num">4.9★</div><div class="hstat-lbl">Avg Rating</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Destinations</div>
+    <div class="sec-title">28 States Explore Karo</div>
+    <div class="sec-sub">Apna destination chunke verified local guide dhundho</div>
+    <div class="states-grid" id="states-grid"></div>
+  </div>
+
+  <div style="background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:4rem 2rem">
+    <div class="section" style="padding:0">
+      <div style="text-align:center;margin-bottom:2.5rem">
+        <div class="sec-label" style="text-align:center">Process</div>
+        <div class="sec-title" style="text-align:center">Kaise Kaam Karta Hai?</div>
+        <div class="sec-sub" style="text-align:center;margin-bottom:0">4 simple steps — guide book karo</div>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card"><div class="step-num">1</div><h3>Destination Chunao</h3><p>State, city ya tourist place search karo AI se</p></div>
+        <div class="step-card"><div class="step-num">2</div><h3>Compare & Filter</h3><p>Price, bhasha, rating se best guide dhundho</p></div>
+        <div class="step-card"><div class="step-num">3</div><h3>Chat & Negotiate</h3><p>Guide se real-time chat karo, deal set karo</p></div>
+        <div class="step-card"><div class="step-num">4</div><h3>Pay & Go</h3><p>UPI ya Razorpay se secure payment, booking confirm</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <div class="sec-label">Top Picks</div>
+        <div class="sec-title" style="margin-bottom:0">Featured Guides</div>
+        <div class="sec-sub" style="margin-bottom:0">Aadhaar verified, highly rated local experts</div>
+      </div>
+      <button class="btn btn-ghost" onclick="showPage('search')">Sab Dekho →</button>
+    </div>
+    <div class="guides-grid" id="featured-guides"></div>
+  </div>
+
+  <div class="pay-band">
+    <div class="pay-label">Supported Payments</div>
+    <div class="pay-methods">
+      <div class="pm">📱 UPI</div>
+      <div class="pm">🟢 PhonePe</div>
+      <div class="pm">🔵 Razorpay</div>
+      <div class="pm">💳 Credit/Debit Card</div>
+      <div class="pm">🏦 Net Banking</div>
+      <div class="pm">📲 Google Pay</div>
+      <div class="pm">🟠 Paytm</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div style="font-family:var(--font);font-size:20px;font-weight:800;color:var(--saffron);margin-bottom:10px">🇮🇳 GuideBharat</div>
+        <p style="max-width:240px;line-height:1.7;font-size:13px">India ka sabse trusted AI-powered local guide marketplace. Verified guides, safe payments, real experiences.</p>
+      </div>
+      <div><h4>Tourists</h4><a>Guide Dhundho</a><a>Trip Planner</a><a>Budget Trips</a><a>Reviews</a></div>
+      <div><h4>Guides</h4><a>Register Karo</a><a>Dashboard</a><a>Earnings</a><a>Aadhaar Verify</a></div>
+      <div><h4>Support</h4><a>Contact Us</a><a>FAQ</a><a>Privacy Policy</a><a>Terms</a></div>
+    </div>
+    <div class="footer-bottom">© 2025 GuideBharat — Made with ❤️ for India &nbsp;|&nbsp; Platform fee: 10% per booking</div>
+  </footer>
+</div>
+
+<!-- SEARCH -->
+<div id="page-search" class="page">
+  <div class="section">
+    <div style="margin-bottom:2rem">
+      <div class="sec-label">Search</div>
+      <div class="sec-title" style="margin-bottom:4px">Guide Dhundho</div>
+      <div class="sec-sub" style="margin-bottom:0">12,400+ verified guides, 28 states mein</div>
+    </div>
+    <div class="search-layout">
+      <div class="filter-panel">
+        <h3>Filters</h3>
+        <div class="fg"><label>State</label><select><option>All States</option><option>Odisha</option><option>Rajasthan</option><option>Kerala</option><option>Goa</option><option>UP</option><option>Himachal Pradesh</option></select></div>
+        <div class="fg"><label>Language</label><select><option>Any</option><option>Hindi</option><option>English</option><option>Odia</option><option>Tamil</option><option>Malayalam</option><option>Bengali</option></select></div>
+        <div class="fg"><label>Max Price: ₹<span id="pval">1500</span>/din</label><input type="range" min="200" max="5000" value="1500" step="100" oninput="document.getElementById('pval').textContent=this.value" /></div>
+        <div class="fg"><label>Min Rating</label><select><option>Any</option><option>4+ ★</option><option>4.5+ ★</option></select></div>
+        <div class="fg"><label>Experience</label><select><option>Any</option><option>1+ Years</option><option>3+ Years</option><option>5+ Years</option></select></div>
+        <button class="btn btn-saffron" style="width:100%;padding:10px">Apply Filters</button>
+      </div>
+      <div>
+        <div class="results-header">
+          <span class="results-count">142 guides mile ✦</span>
+          <select style="background:var(--glass);border:1px solid var(--border2);border-radius:var(--r8);padding:7px 10px;font-size:12px;color:var(--textMuted);font-family:var(--fontBody)"><option>Rating se Sort</option><option>Price: Low to High</option><option>Price: High to Low</option></select>
+        </div>
+        <div class="guides-grid" id="search-guides"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDE PROFILE -->
+<div id="page-guide-profile" class="page">
+  <div class="section">
+    <button onclick="showPage('search')" style="background:none;border:none;cursor:pointer;color:var(--textMuted);font-size:13px;margin-bottom:1.5rem;display:flex;align-items:center;gap:6px">← Wapas</button>
+    <div class="profile-hero" id="profile-content"></div>
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:20px">
+      <div>
+        <div class="book-card" style="margin-bottom:16px">
+          <div style="font-family:var(--font);font-size:16px;font-weight:700;margin-bottom:1rem">Reviews (24)</div>
+          <div class="review-card"><div class="rev-name">Ankit S. &nbsp;<span style="color:var(--gold)">★★★★★</span></div><div class="rev-text">"Ramesh ji ne Puri temple ka poora tour amazing kiya! Hindi mein explain kiya. Bohot knowledge."</div></div>
+          <div class="review-card"><div class="rev-name">Priya K. &nbsp;<span style="color:var(--gold)">★★★★★</span></div><div class="rev-text">"Best guide in Odisha! Budget ke andar trip complete hui. Highly recommend."</div></div>
+          <div class="review-card"><div class="rev-name">Suresh M. &nbsp;<span style="color:var(--gold)">★★★★☆</span></div><div class="rev-text">"Very helpful and punctual. Local food recommendations bhi diye jo bahut achhe the."</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="book-card">
+          <div style="font-family:var(--font);font-size:16px;font-weight:700;margin-bottom:1rem">Book This Guide</div>
+          <div class="fg2" style="margin-bottom:12px"><label>Start Date</label><input type="date" /></div>
+          <div class="fg2" style="margin-bottom:12px"><label>Number of Days</label><select><option>1 Din</option><option>2 Din</option><option selected>3 Din</option><option>5 Din</option><option>7 Din</option></select></div>
+          <div style="background:rgba(255,107,0,0.08);border:1px solid rgba(255,107,0,0.15);border-radius:var(--r12);padding:14px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--textMuted)">Guide fee (3 din)</span><span>₹1,500</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--textMuted)">Platform (10%)</span><span style="color:var(--textDim)">₹150</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;border-top:1px solid rgba(255,107,0,0.15);padding-top:10px;margin-top:10px"><span>Total</span><span style="color:var(--saffron)">₹1,650</span></div>
+          </div>
+          <button class="btn btn-saffron" style="width:100%;padding:12px;font-size:14px" onclick="showMod('payment')">Book Karo — ₹1,650</button>
+          <button class="btn btn-ghost" style="width:100%;padding:12px;font-size:14px;margin-top:8px" onclick="showPage('chat')">💬 Chat with Guide</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="page-chat" class="page">
+  <div class="section" style="max-width:660px">
+    <button onclick="showPage('guide-profile')" style="background:none;border:none;cursor:pointer;color:var(--textMuted);font-size:13px;margin-bottom:1.5rem">← Profile par jaao</button>
+    <div class="chat-wrap">
+      <div class="chat-head">
+        <div class="chat-av">R</div>
+        <div><div style="font-weight:600;font-size:14px">Ramesh Kumar</div><div style="font-size:11px;color:var(--teal)">🟢 Online — Puri, Odisha</div></div>
+      </div>
+      <div class="chat-msgs" id="chat-messages">
+        <div class="msg them"><div class="mbubble">Namaste! Main Ramesh hoon, Puri ka local guide. Aap ka kya plan hai? 🙏</div><div class="mtime">10:00 AM</div></div>
+        <div class="msg me"><div class="mbubble">Hello Ramesh ji! 3 din ke liye Puri aur Konark dekhna chahta hoon. ₹1200/din mein ho sakta hai?</div><div class="mtime">10:02 AM</div></div>
+        <div class="msg them"><div class="mbubble">Ji zaroor! ₹1200/din theek hai. Jagannath Temple, Konark Sun Temple, Chilika Lake — sab cover karunga. Transport bhi arrange kar dunga.</div><div class="mtime">10:05 AM</div></div>
+      </div>
+      <div class="chat-foot">
+        <input class="chat-in" type="text" placeholder="Message likho..." id="chat-in" onkeypress="if(event.key==='Enter')sendMsg()" />
+        <button class="chat-send" onclick="sendMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRIP PLANNER -->
+<div id="page-planner" class="page">
+  <div class="section" style="max-width:780px">
+    <div class="sec-label">AI Trip Planner</div>
+    <div class="sec-title">Smart Trip Planner</div>
+    <div class="sec-sub">Budget batao — AI complete itinerary banayega</div>
+    <div class="planner-card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+        <div class="fg2"><label>Destination</label><select id="pl-dest"><option>Puri, Odisha</option><option>Jaipur, Rajasthan</option><option>Varanasi, UP</option><option>Munnar, Kerala</option><option>Goa</option><option>Manali, HP</option></select></div>
+        <div class="fg2"><label>Kitne Din</label><select id="pl-days"><option value="2">2 Din</option><option value="3" selected>3 Din</option><option value="5">5 Din</option><option value="7">7 Din</option></select></div>
+        <div class="fg2"><label>Budget (₹)</label><input type="number" id="pl-budget" value="5000" min="1000" /></div>
+        <div class="fg2"><label>Hotel Type</label><select id="pl-hotel"><option>Budget (₹400/night)</option><option>Standard (₹800/night)</option><option>Premium (₹2000/night)</option></select></div>
+        <div class="fg2"><label>Khaana</label><select><option>Veg Only</option><option>Veg + Non-Veg</option><option>Street Food</option></select></div>
+        <div class="fg2"><label>Transport</label><select><option>Local Bus/Auto</option><option>Shared Cab</option><option>Private Car</option></select></div>
+      </div>
+      <button class="btn btn-saffron" style="padding:12px 28px;font-size:14px" onclick="genPlan()">✨ AI Plan Generate Karo</button>
+    </div>
+    <div class="trip-result" id="trip-result"></div>
+  </div>
+</div>
+
+<!-- BECOME GUIDE -->
+<div id="page-become-guide" class="page">
+  <div class="section" style="max-width:720px">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div style="font-size:60px;margin-bottom:1rem">🎒</div>
+      <div class="sec-label" style="text-align:center">For Guides</div>
+      <div class="sec-title" style="text-align:center">Guide Bano, Kamaao</div>
+      <div class="sec-sub" style="text-align:center;margin-bottom:0">Apne shaher ka expert bano. ₹200 se ₹5000+ per day kamao</div>
+    </div>
+    <div class="bg-grid">
+      <div class="bg-card"><div class="bg-icon">💰</div><h3>₹200–₹5000/din</h3><p>Apna price khud set karo</p></div>
+      <div class="bg-card"><div class="bg-icon">🌍</div><h3>28 States</h3><p>Pan-India coverage</p></div>
+      <div class="bg-card"><div class="bg-icon">🔒</div><h3>AI Verified</h3><p>Aadhaar + photo check</p></div>
+      <div class="bg-card"><div class="bg-icon">📱</div><h3>Easy App</h3><p>Phone se sab manage</p></div>
+    </div>
+    <div class="reg-card">
+      <div style="font-family:var(--font);font-size:18px;font-weight:800;margin-bottom:1.5rem">Guide Registration</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="mf"><label>Pura Naam</label><input type="text" placeholder="Ramesh Kumar" /></div>
+        <div class="mf"><label>Mobile</label><input type="tel" placeholder="9876543210" /></div>
+        <div class="mf"><label>Email</label><input type="email" placeholder="guide@email.com" /></div>
+        <div class="mf"><label>State</label><select><option>Odisha</option><option>Rajasthan</option><option>Kerala</option><option>Goa</option></select></div>
+        <div class="mf"><label>City</label><input type="text" placeholder="Puri" /></div>
+        <div class="mf"><label>Price Per Day (₹)</label><input type="number" placeholder="500" min="200" /></div>
+      </div>
+      <div class="mf"><label>Languages (comma se)</label><input type="text" placeholder="Hindi, English, Odia" /></div>
+      <div class="mf"><label>Experience</label><select><option>1 Year</option><option>2 Years</option><option>3-5 Years</option><option>5+ Years</option></select></div>
+      <div class="mf"><label>Aadhaar Card Upload *</label><input type="file" accept="image/*,.pdf" /></div>
+      <div class="mf"><label>Profile Photo</label><input type="file" accept="image/*" /></div>
+      <button class="btn btn-saffron" style="width:100%;padding:13px;font-size:14px;margin-top:4px">🚀 Register as Guide</button>
+      <p style="font-size:11px;color:var(--textDim);text-align:center;margin-top:10px">Admin approval 24-48 hrs mein milegi</p>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page">
+  <div class="section">
+    <div class="dash-layout">
+      <div class="sidebar">
+        <div class="sb-user"><div class="avtr">A</div><div class="sb-name">Ankit Sharma</div><div class="sb-role">Tourist Account</div></div>
+        <div class="sb-menu">
+          <a class="active">🏠 Overview</a>
+          <a>🗺️ Meri Trips</a>
+          <a>📋 Bookings</a>
+          <a>💳 Payments</a>
+          <a onclick="showPage('chat')">💬 Chat</a>
+          <a>⭐ Reviews</a>
+          <a style="color:rgba(255,107,0,0.6);margin-top:12px" onclick="showPage('home')">← Logout</a>
+        </div>
+      </div>
+      <div class="dash-content">
+        <div style="font-family:var(--font);font-size:20px;font-weight:800;margin-bottom:1.5rem">Swagat Hai, Ankit ji! 🙏</div>
+        <div class="stat-cards">
+          <div class="scard"><div class="scard-lbl">Total Trips</div><div class="scard-val">4</div></div>
+          <div class="scard"><div class="scard-lbl">Guides Hired</div><div class="scard-val orange">6</div></div>
+          <div class="scard"><div class="scard-lbl">Total Spent</div><div class="scard-val teal">₹8,400</div></div>
+          <div class="scard"><div class="scard-lbl">Reviews Given</div><div class="scard-val">5</div></div>
+        </div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:1rem">Recent Bookings</div>
+        <table class="dtable">
+          <thead><tr><th>Guide</th><th>Location</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Ramesh Kumar</td><td>Puri, Odisha</td><td>Dec 15–17</td><td>₹1,650</td><td><span class="sbadge done">Completed</span></td></tr>
+            <tr><td>Sunita Devi</td><td>Jaipur, Raj.</td><td>Nov 5–7</td><td>₹2,200</td><td><span class="sbadge done">Completed</span></td></tr>
+            <tr><td>Rajiv Menon</td><td>Munnar, KL</td><td>Jan 10–14</td><td>₹3,500</td><td><span class="sbadge upcoming">Upcoming</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="page-admin" class="page">
+  <div class="section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+      <div><div class="sec-label">Admin Panel</div><div class="sec-title" style="margin-bottom:0">GuideBharat Control</div></div>
+      <div style="background:rgba(255,107,0,0.1);border:1px solid rgba(255,107,0,0.2);color:var(--saffron);padding:6px 16px;border-radius:var(--r8);font-size:12px;font-weight:600">🛡️ Admin: Owner</div>
+    </div>
+    <div class="admin-stats">
+      <div class="astat"><div class="astat-lbl">Total Users</div><div class="astat-val">48,320</div></div>
+      <div class="astat"><div class="astat-lbl">Verified Guides</div><div class="astat-val" style="color:var(--teal)">12,410</div></div>
+      <div class="astat"><div class="astat-lbl">Pending Verify</div><div class="astat-val" style="color:var(--gold)">247</div></div>
+      <div class="astat"><div class="astat-lbl">Total Bookings</div><div class="astat-val">1,84,500</div></div>
+      <div class="astat"><div class="astat-lbl">This Month</div><div class="astat-val" style="color:var(--saffron)">₹2.4L</div></div>
+      <div class="astat"><div class="astat-lbl">Commission</div><div class="astat-val" style="color:var(--teal)">₹24K</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active">⏳ Pending Verification</div>
+      <div class="tab">✅ Approved Guides</div>
+      <div class="tab">💰 Payments</div>
+      <div class="tab">👥 All Users</div>
+    </div>
+    <table class="dtable">
+      <thead><tr><th>Guide Name</th><th>State</th><th>Applied</th><th>Aadhaar</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>Ravi Shankar</td><td>Varanasi, UP</td><td>2 days ago</td><td><span class="sbadge upcoming">Pending</span></td><td><button class="btn btn-teal" style="padding:4px 12px;font-size:11px;margin-right:6px" onclick="this.textContent='✅ Approved';this.className='btn btn-ghost';this.style.fontSize='11px'">Approve</button><button class="btn btn-ghost" style="padding:4px 12px;font-size:11px;color:rgba(255,80,80,0.8);border-color:rgba(255,80,80,0.2)">Reject</button></td></tr>
+        <tr><td>Meena Kumari</td><td>Jaipur, Rajasthan</td><td>3 days ago</td><td><span class="sbadge upcoming">Pending</span></td><td><button class="btn btn-teal" style="padding:4px 12px;font-size:11px;margin-right:6px" onclick="this.textContent='✅ Approved';this.className='btn btn-ghost';this.style.fontSize='11px'">Approve</button><button class="btn btn-ghost" style="padding:4px 12px;font-size:11px;color:rgba(255,80,80,0.8);border-color:rgba(255,80,80,0.2)">Reject</button></td></tr>
+        <tr><td>Suresh Nair</td><td>Kochi, Kerala</td><td>5 days ago</td><td><span class="sbadge upcoming">Pending</span></td><td><button class="btn btn-teal" style="padding:4px 12px;font-size:11px;margin-right:6px" onclick="this.textContent='✅ Approved';this.className='btn btn-ghost';this.style.fontSize='11px'">Approve</button><button class="btn btn-ghost" style="padding:4px 12px;font-size:11px;color:rgba(255,80,80,0.8);border-color:rgba(255,80,80,0.2)">Reject</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="mv-login" class="modal-viewport">
+  <div class="modal">
+    <button class="modal-close" onclick="hideMod('login')">×</button>
+    <h2>Login Karo</h2>
+    <div class="modal-sub">Apne GuideBharat account mein jaao</div>
+    <div class="mf"><label>Mobile / Email</label><input type="text" placeholder="9876543210 ya email@gmail.com" /></div>
+    <div class="mf"><label>Password</label><input type="password" placeholder="••••••••" /></div>
+    <button class="btn btn-saffron" style="width:100%;padding:12px;font-size:14px;margin-top:4px" onclick="hideMod('login');showPage('dashboard')">Login →</button>
+    <p style="text-align:center;font-size:12px;color:var(--textMuted);margin-top:14px">Account nahi? <a style="color:var(--saffron);cursor:pointer" onclick="hideMod('login');showMod('register')">Register karo</a></p>
+  </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div id="mv-register" class="modal-viewport">
+  <div class="modal">
+    <button class="modal-close" onclick="hideMod('register')">×</button>
+    <h2>Register Karo</h2>
+    <div class="modal-sub">Apna free GuideBharat account banao</div>
+    <div class="ut-grid">
+      <div class="ut-btn active" onclick="selUT(this)"><div class="ut-icon">✈️</div><div class="ut-lbl">Tourist</div></div>
+      <div class="ut-btn" onclick="selUT(this)"><div class="ut-icon">🎒</div><div class="ut-lbl">Guide</div></div>
+      <div class="ut-btn" onclick="selUT(this)"><div class="ut-icon">🛡️</div><div class="ut-lbl">Admin</div></div>
+    </div>
+    <div class="row2" style="margin-bottom:12px">
+      <div class="mf"><label>Pura Naam</label><input type="text" placeholder="Ankit Sharma" /></div>
+      <div class="mf"><label>Mobile (OTP)</label><input type="tel" placeholder="9876543210" /></div>
+    </div>
+    <div class="mf"><label>Email</label><input type="email" placeholder="ankit@gmail.com" /></div>
+    <div class="row2" style="margin-bottom:12px">
+      <div class="mf"><label>State</label><select><option>Odisha</option><option>Rajasthan</option><option>UP</option><option>Kerala</option></select></div>
+      <div class="mf"><label>Password</label><input type="password" placeholder="••••••••" /></div>
+    </div>
+    <button class="btn btn-saffron" style="width:100%;padding:12px;font-size:14px" onclick="hideMod('register');showPage('dashboard')">OTP Bhejo & Register</button>
+    <p style="text-align:center;font-size:12px;color:var(--textMuted);margin-top:14px">Pehle se account hai? <a style="color:var(--saffron);cursor:pointer" onclick="hideMod('register');showMod('login')">Login karo</a></p>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div id="mv-payment" class="modal-viewport">
+  <div class="modal" style="max-width:360px">
+    <button class="modal-close" onclick="hideMod('payment')">×</button>
+    <h2>Payment</h2>
+    <div class="modal-sub">Razorpay secure gateway</div>
+    <div style="background:rgba(255,107,0,0.08);border:1px solid rgba(255,107,0,0.15);border-radius:var(--r12);padding:1.25rem;text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:12px;color:var(--textMuted);margin-bottom:4px">Total Amount</div>
+      <div style="font-family:var(--font);font-size:36px;font-weight:800;color:var(--saffron)">₹1,650</div>
+      <div style="font-size:12px;color:var(--textDim)">Ramesh Kumar • 3 din</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="border:1.5px solid rgba(255,107,0,0.4);border-radius:var(--r8);padding:11px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--saffron)">📱 UPI</div>
+      <div style="border:1px solid var(--border2);border-radius:var(--r8);padding:11px;text-align:center;cursor:pointer;font-size:12px;color:var(--textMuted)">💳 Card</div>
+      <div style="border:1px solid var(--border2);border-radius:var(--r8);padding:11px;text-align:center;cursor:pointer;font-size:12px;color:var(--textMuted)">🏦 Net Banking</div>
+      <div style="border:1px solid var(--border2);border-radius:var(--r8);padding:11px;text-align:center;cursor:pointer;font-size:12px;color:var(--textMuted)">🟢 Wallet</div>
+    </div>
+    <div class="mf"><input type="text" placeholder="UPI ID: yourname@paytm" /></div>
+    <button class="btn btn-saffron" style="width:100%;padding:13px;font-size:14px" onclick="hideMod('payment');alert('✅ Payment successful! Booking confirmed.')">Pay ₹1,650 Securely →</button>
+    <p style="text-align:center;font-size:10px;color:var(--textDim);margin-top:10px">🔒 SSL Encrypted • Razorpay Powered</p>
+  </div>
+</div>
+
+<script>
+const states=[{n:'Odisha',e:'🏛️',c:892},{n:'Rajasthan',e:'🏰',c:1240},{n:'Uttar Pradesh',e:'🕌',c:1580},{n:'Kerala',e:'🌴',c:876},{n:'Goa',e:'🏖️',c:654},{n:'Maharashtra',e:'🌆',c:1320},{n:'Himachal Pradesh',e:'🏔️',c:743},{n:'Tamil Nadu',e:'🛕',c:1090},{n:'Karnataka',e:'🦁',c:980},{n:'West Bengal',e:'🎭',c:834},{n:'Gujarat',e:'🦋',c:760},{n:'Punjab',e:'🌾',c:512},{n:'Madhya Pradesh',e:'🐯',c:678},{n:'Jammu & Kashmir',e:'❄️',c:567},{n:'Uttarakhand',e:'⛰️',c:689},{n:'Andhra Pradesh',e:'🌊',c:723},{n:'Telangana',e:'🏯',c:645},{n:'Bihar',e:'🕍',c:589},{n:'Jharkhand',e:'🌳',c:412},{n:'Assam',e:'🍵',c:478},{n:'Meghalaya',e:'☁️',c:345},{n:'Arunachal Pradesh',e:'🌄',c:234},{n:'Sikkim',e:'🌸',c:287},{n:'Manipur',e:'💃',c:198},{n:'Mizoram',e:'🎋',c:167},{n:'Nagaland',e:'🎺',c:189},{n:'Tripura',e:'🏺',c:213},{n:'Chhattisgarh',e:'🌿',c:356}];
+
+const guides=[
+  {name:'Ramesh Kumar',loc:'Puri, Odisha',emoji:'👨',bg:'rgba(255,107,0,0.08)',rating:'4.9',reviews:142,langs:'Hindi, English, Odia',price:500,tier:'Budget',tc:'tier-budget'},
+  {name:'Sunita Devi',loc:'Jaipur, Rajasthan',emoji:'👩',bg:'rgba(138,43,226,0.08)',rating:'4.8',reviews:98,langs:'Hindi, English, Rajasthani',price:800,tier:'Standard',tc:'tier-standard'},
+  {name:'Rajiv Menon',loc:'Munnar, Kerala',emoji:'🧑',bg:'rgba(0,212,170,0.08)',rating:'4.9',reviews:211,langs:'Malayalam, English, Hindi',price:1200,tier:'Standard',tc:'tier-standard'},
+  {name:'Priya Sharma',loc:'Goa',emoji:'👩',bg:'rgba(255,179,71,0.08)',rating:'4.7',reviews:76,langs:'English, Hindi, Konkani',price:1800,tier:'Premium',tc:'tier-premium'},
+  {name:'Arjun Patel',loc:'Ahmedabad, Gujarat',emoji:'👨',bg:'rgba(0,212,170,0.08)',rating:'4.6',reviews:54,langs:'Gujarati, Hindi, English',price:600,tier:'Budget',tc:'tier-budget'},
+  {name:'Kavita Nair',loc:'Varanasi, UP',emoji:'👩',bg:'rgba(255,107,0,0.08)',rating:'4.9',reviews:187,langs:'Hindi, English, Sanskrit',price:700,tier:'Standard',tc:'tier-standard'},
+];
+
+function renderStates(){
+  document.getElementById('states-grid').innerHTML=states.map(s=>`<div class="state-card" onclick="showPage('search')"><div class="s-emoji">${s.e}</div><div class="s-name">${s.n}</div><div class="s-count">${s.c} guides</div></div>`).join('');
+}
+function guideCard(g){
+  return`<div class="guide-card" onclick="openGuide(${JSON.stringify(g).replace(/"/g,'&quot;')})">
+    <div class="gc-banner" style="background:${g.bg}">
+      <span>${g.emoji}</span>
+      <span class="gc-tier ${g.tc}">${g.tier}</span>
+    </div>
+    <div class="gc-body">
+      <div class="gc-name">${g.name}</div>
+      <div class="gc-loc">📍 ${g.loc}</div>
+      <div class="gc-stars">${'★'.repeat(Math.floor(g.rating))} ${g.rating} <span style="color:var(--textDim);font-size:11px">(${g.reviews})</span></div>
+      <div class="gc-langs">🗣️ ${g.langs}</div>
+      <span class="verified-pill">✓ Aadhaar Verified</span>
+      <div class="gc-footer">
+        <div class="gc-price">₹${g.price}<span>/din</span></div>
+        <button class="btn btn-saffron" style="padding:6px 14px;font-size:12px">Book</button>
+      </div>
+    </div>
+  </div>`;
+}
+function openGuide(g){
+  document.getElementById('profile-content').innerHTML=`
+    <div class="prof-av">${g.name[0]}</div>
+    <div class="prof-info">
+      <h2>${g.name}</h2>
+      <div class="prof-meta">📍 ${g.loc} &nbsp;|&nbsp; <span style="color:var(--gold)">★ ${g.rating}</span> (${g.reviews} reviews) &nbsp;|&nbsp; 5+ yrs exp</div>
+      <div class="prof-tags">
+        <span class="ptag" style="color:var(--teal);border-color:rgba(0,212,170,0.2)">✓ Verified</span>
+        <span class="ptag">🗣️ ${g.langs}</span>
+        <span class="ptag" style="color:var(--saffron)">₹${g.price}/din</span>
+        <span class="ptag">${g.tier}</span>
+      </div>
+      <p style="margin-top:1rem;font-size:13px;color:var(--textMuted);line-height:1.65;max-width:480px">Namaskar! Main ${g.name} hoon, ${g.loc} ka experienced local guide. Mujhe yahan ki har jagah, mandir aur chhipi gali ki puri jankari hai. Authentic local experience guaranteed.</p>
+    </div>`;
+  showPage('guide-profile');
+}
+function genPlan(){
+  const dest=document.getElementById('pl-dest').value;
+  const days=parseInt(document.getElementById('pl-days').value);
+  const budget=parseInt(document.getElementById('pl-budget').value);
+  const hotel=document.getElementById('pl-hotel').value;
+  const hc=hotel.includes('Budget')?400:hotel.includes('Standard')?800:2000;
+  const gc=budget<3000?300:budget<8000?600:1200;
+  const fc=Math.round(budget*0.15);
+  const tc=Math.round(budget*0.1);
+  const total=(hc+gc+fc+tc)*days;
+  const plans={'Puri, Odisha':[{d:'Din 1',t:'Jagannath Temple & Puri Beach',p:'Subah Jagannath Temple darshan, dopahar Puri Beach, shaam local market walk.'},{d:'Din 2',t:'Konark Sun Temple',p:'UNESCO World Heritage site, guide ke saath 3 ghante, stone carvings explore.'},{d:'Din 3',t:'Chilika Lake & Departure',p:'Asia ki sabse badi brackish lake, dolphins dekhne ka chance, local seafood lunch.'}],'Jaipur, Rajasthan':[{d:'Din 1',t:'Hawa Mahal & City Palace',p:'Pink City ka iconic tour, rajputi architecture, local chai ke saath shaam.'},{d:'Din 2',t:'Amber Fort',p:'Haathi ki sawari, fort tour, Jal Mahal reflection photography.'},{d:'Din 3',t:'Jantar Mantar & Shopping',p:'UNESCO site, Johari Bazaar handicrafts, return journey.'}]};
+  const itin=plans[dest]||plans['Puri, Odisha'];
+  const r=document.getElementById('trip-result');
+  r.className='trip-result show';
+  r.innerHTML=`<div class="planner-card">
+    <div style="font-family:var(--font);font-size:18px;font-weight:800;margin-bottom:4px">🗺️ ${days}-Din ${dest} Plan</div>
+    <div style="font-size:13px;color:var(--textMuted);margin-bottom:1.5rem">Budget: ₹${budget.toLocaleString()} | ${hotel.split(' ')[0]}</div>
+    ${itin.slice(0,days).map(i=>`<div class="itm"><div class="day-chip">${i.d}</div><div><h4>${i.t}</h4><p>${i.p}</p></div></div>`).join('')}
+    <div class="budget-grid">
+      <div class="bitem"><div class="b-lbl">🏨 Hotel</div><div class="b-val">₹${(hc*days).toLocaleString()}</div></div>
+      <div class="bitem"><div class="b-lbl">🎒 Guide</div><div class="b-val">₹${(gc*days).toLocaleString()}</div></div>
+      <div class="bitem"><div class="b-lbl">🍽️ Khaana</div><div class="b-val">₹${(fc*days).toLocaleString()}</div></div>
+      <div class="bitem"><div class="b-lbl">🚌 Transport</div><div class="b-val">₹${(tc*days).toLocaleString()}</div></div>
+      <div class="bitem" style="border:1px solid rgba(255,107,0,0.25)"><div class="b-lbl">💰 Total</div><div class="b-val">₹${total.toLocaleString()}</div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap">
+      <button class="btn btn-saffron" style="padding:10px 20px" onclick="showPage('search')">Book Guide →</button>
+      <button class="btn btn-ghost" style="padding:10px 20px">📄 PDF Download</button>
+    </div>
+  </div>`;
+}
+function sendMsg(){
+  const inp=document.getElementById('chat-in');
+  const t=inp.value.trim();
+  if(!t)return;
+  const m=document.getElementById('chat-messages');
+  const now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  m.innerHTML+=`<div class="msg me"><div class="mbubble">${t}</div><div class="mtime">${now}</div></div>`;
+  inp.value='';m.scrollTop=m.scrollHeight;
+  setTimeout(()=>{m.innerHTML+=`<div class="msg them"><div class="mbubble">Ji zaroor! Main poori koshish karunga ki aapka tour yaadgar ho. Koi aur sawaal? 🙏</div><div class="mtime">${now}</div></div>`;m.scrollTop=m.scrollHeight;},1200);
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const p=document.getElementById('page-'+id);
+  if(p){p.classList.add('active');window.scrollTo(0,0);}
+}
+function showMod(id){document.getElementById('mv-'+id).classList.add('show')}
+function hideMod(id){document.getElementById('mv-'+id).classList.remove('show')}
+function selUT(el){document.querySelectorAll('.ut-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active')}
+
+document.querySelectorAll('.modal-viewport').forEach(mv=>{mv.addEventListener('click',e=>{if(e.target===mv)mv.classList.remove('show')})});
+
+renderStates();
+document.getElementById('featured-guides').innerHTML=guides.map(guideCard).join('');
+document.getElementById('search-guides').innerHTML=guides.map(guideCard).join('');
+
+const canvas=document.getElementById('canvas-bg');
+if(canvas){
+  const ctx=canvas.getContext('2d');
+  const hero=canvas.parentElement;
+  canvas.width=hero.offsetWidth||800;
+  canvas.height=hero.offsetHeight||580;
+  const pts=Array.from({length:55},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+1}));
+  function drawPts(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>canvas.width)p.vx*=-1;
+      if(p.y<0||p.y>canvas.height)p.vy*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,107,0,0.35)';ctx.fill();
+    });
+    pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{
+      const d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<120){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(255,107,0,${0.08*(1-d/120)})`;ctx.lineWidth=.5;ctx.stroke();}
+    }));
+    requestAnimationFrame(drawPts);
+  }
+  drawPts();
+}
+</script>
